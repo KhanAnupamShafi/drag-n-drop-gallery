@@ -1,0 +1,96 @@
+ @import url('https://fonts.googleapis.com/css2?family=Karla:wght@300;400;600;700&display=swap');
+
+ .container {
+   display: grid;
+   grid-template-columns: 0.5fr 1fr;
+   /* Two equal columns */
+   gap: 10px;
+   /* Gap between columns */
+   touch-action: none;
+   width: 800px;
+   margin: 1rem auto;
+ }
+
+ .dropzone {
+   height: 400px;
+   border-radius: 1rem;
+ }
+
+ .dropzone.left {
+   margin-right: 10px;
+   border: 1px solid rgba(0, 0, 0, 0.1);
+   height: 250px;
+   width: 250px;
+   overflow: hidden;
+
+ }
+
+ .dropzone.right {
+   height: 500px;
+   width: 650px;
+
+   gap: 0;
+   border: 5px solid rgba(0, 0, 0, 0.1);
+ }
+
+ .grid-item {
+   width: 200px;
+   box-sizing: border-box;
+ }
+
+ .preview-item {
+   padding: 0px;
+   height: 250px;
+   width: 250px;
+   box-sizing: border-box;
+ }
+
+ .grid-item-content {
+   cursor: grab;
+   user-select: none;
+   padding: 5px;
+   width: 200px;
+   height: 190px;
+   box-sizing: border-box;
+   background: #f2f8f9;
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+   color: white;
+   align-items: center;
+   border-radius: 10%;
+   transition: all 0.2s ease-in-out;
+   box-shadow: 0 .2rem .6rem rgba(#000, .07);
+
+   &:hover {
+     transform: scale(1.03);
+   }
+
+   &:hover,
+   &:focus {
+     transform: translateY(-0.2rem);
+     box-shadow: 0 0.2rem 0.2rem rgba(0, 0, 0, 0.04), 0 0.4rem 0.4rem rgba(0, 0, 0, 0.04), 0 0.8rem 0.8rem rgba(0, 0, 0, 0.04), 0 1.6rem 1.6rem rgba(0, 0, 0, 0.04);
+   }
+
+
+ }
+
+ .preview-item-content {
+   cursor: grab;
+   user-select: none;
+   width: 250px;
+   height: 250px;
+   box-sizing: border-box;
+   background: #08e;
+   display: flex;
+   justify-content: center;
+   color: white;
+   font-family: Arial, Helvetica, sans-serif;
+   align-items: center;
+   border-radius: 50%;
+ }
+
+ .selected {
+   border: 2px solid blue;
+   /* Add your desired styling for selected items */
+ }
