@@ -6,30 +6,34 @@ import {
   move,
   swap,
 } from 'react-grid-dnd';
-type ItemType = { id: number; name: string; selected?: boolean };
-
+import { techProducts } from '../assets/api';
+import Button from './Button';
+type ItemType = {
+  id: number;
+  name: string;
+  selected?: boolean;
+  image?: string;
+  description?: string;
+  price?: string;
+};
 export function Gallery() {
   const [items, setItems] = React.useState<{
     left: ItemType[];
     right: ItemType[];
   }>({
-    left: [
-      { id: 1, name: 'men' },
-      { id: 2, name: 'toe' },
-      { id: 3, name: 'jason' },
-      { id: 4, name: 'chris' },
-      { id: 5, name: 'heather' },
-      { id: 6, name: 'Richard' },
-      { id: 7, name: 'george' },
-      { id: 8, name: 'rupert' },
-      { id: 9, name: 'alice' },
-      { id: 10, name: 'katherine' },
-      { id: 11, name: 'pam' },
-      { id: 12, name: 'katie' },
-    ],
+    left: techProducts,
     right: [],
   });
+  const [itemsPerRow, setItemsPerRow] = React.useState(3);
 
+  const selectedItemsCountLeft = items.left.filter(
+    (item) => item.selected
+  ).length;
+  const selectedItemsCountRight = items.right.filter(
+    (item) => item.selected
+  ).length;
+  const totalSelectedItemsCount =
+    selectedItemsCountLeft + selectedItemsCountRight;
   function handleItemClick(
     item: ItemType,
     list: ItemType[],
@@ -49,6 +53,34 @@ export function Gallery() {
       [list === items.left ? 'left' : 'right']: updatedList,
     }));
   }
+  React.useEffect(() => {
+    // Update itemsPerRow based on the screen width
+    const updateItemsPerRow = () => {
+      const screenWidth = window.innerWidth;
+
+      if (screenWidth >= 1280) {
+        // Large screens
+        setItemsPerRow(3);
+      } else if (screenWidth >= 1024) {
+        // Tablets or smaller laptops
+        setItemsPerRow(2);
+      } else {
+        // Mobile devices
+        setItemsPerRow(1);
+      }
+    };
+
+    // Initial update
+    updateItemsPerRow();
+
+    // Add an event listener to update itemsPerRow on window resize
+    window.addEventListener('resize', updateItemsPerRow);
+
+    return () => {
+      // Clean up the event listener when the component unmounts
+      window.removeEventListener('resize', updateItemsPerRow);
+    };
+  }, []);
 
   function onChange(
     sourceId: string,
@@ -56,7 +88,6 @@ export function Gallery() {
     targetIndex: number,
     targetId?: string
   ) {
-    console.log(sourceId, sourceIndex, targetIndex, targetId);
     // Check if the target drop zone is "right"
     if (targetId === 'right') {
       if (items.right.length === 1) {
@@ -103,59 +134,144 @@ export function Gallery() {
       right: updatedRight,
     });
   }
+
   return (
     <>
-      <button onClick={handleDeleteSelected}>Delete Selected</button>
+      <div className="box header" style={{ margin: '20px auto' }}>
+        <h3 className="text">
+          <span style={{ fontSize: '2rem' }}>
+            {totalSelectedItemsCount}
+            {'  '}
+          </span>
+          {'  '}
+          Item Selected
+        </h3>
+        <Button onClick={handleDeleteSelected}>
+          Delete Selected
+        </Button>
+      </div>
 
-      <GridContextProvider onChange={onChange}>
-        <div className="container">
-          <GridDropZone
-            className="dropzone left"
-            id="right"
-            boxesPerRow={1}
-            rowHeight={250}>
-            {items.right.map((item) => (
-              <GridItem
-                key={item.name}
-                onClick={() =>
-                  handleItemClick(item, items.right, setItems)
-                }>
-                <div
-                  className={`preview-item ${
-                    item.selected ? 'selected' : ''
-                  }`}>
-                  <div className="preview-item-content">
-                    {item.name[0].toUpperCase()}
+      <div className="box">
+        <GridContextProvider onChange={onChange}>
+          <div className="container">
+            <GridDropZone
+              className="dropzone left "
+              id="right"
+              boxesPerRow={1}
+              rowHeight={250}>
+              {items.right.map((item) => (
+                <GridItem key={item.name}>
+                  <div className={`preview-item `}>
+                    <div className="preview-item-content border-style ">
+                      <div
+                        className={`overlay ${
+                          item.selected ? 'active' : ''
+                        }`}>
+                        <div className="content-overlay"></div>
+                        <img
+                          className="content-image"
+                          src={item.image}
+                          alt=""
+                        />
+
+                        <div className="content-details fadeIn-bottom">
+                          <div
+                            onClick={() =>
+                              handleItemClick(
+                                item,
+                                items.right,
+                                setItems
+                              )
+                            }
+                            className={`checkbox-wrapper`}>
+                            <input
+                              type="checkbox"
+                              checked={item.selected}
+                            />
+                            <svg viewBox="0 0 35.6 35.6">
+                              <circle
+                                className="background"
+                                cx="17.8"
+                                cy="17.8"
+                                r="17.8"></circle>
+                              <circle
+                                className="stroke"
+                                cx="17.8"
+                                cy="17.8"
+                                r="14.37"></circle>
+                              <polyline
+                                className="check"
+                                points="11.78 18.12 15.55 22.23 25.17 12.87"></polyline>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </GridItem>
-            ))}
-          </GridDropZone>
-          <GridDropZone
-            className="dropzone right"
-            id="left"
-            boxesPerRow={3}
-            rowHeight={200}
-            style={{ height: '800px', padding: '10px' }}>
-            {items.left.map((item) => (
-              <GridItem
-                key={item.name}
-                onClick={() =>
-                  handleItemClick(item, items.left, setItems)
-                }>
-                <div
-                  className={`grid-item ${
-                    item.selected ? 'selected' : ''
-                  }`}>
-                  <div className="grid-item-content">
-                    {item.name[0].toUpperCase()}
+                </GridItem>
+              ))}
+            </GridDropZone>
+            <GridDropZone
+              className="dropzone right"
+              id="left"
+              boxesPerRow={itemsPerRow}
+              rowHeight={200}
+              style={{ height: '800px', padding: '10px' }}>
+              {items.left.map((item) => (
+                <GridItem key={item.name}>
+                  <div className={`grid-item`}>
+                    <div className="grid-item-content">
+                      {/* {item.name[0].toUpperCase()} */}
+                      <div
+                        className={`overlay ${
+                          item.selected ? 'active' : ''
+                        }`}>
+                        <div className="content-overlay"></div>
+                        <img
+                          className="content-image"
+                          src={item.image}
+                          alt=""
+                        />
+                        <div className="content-details fadeIn-bottom">
+                          <div
+                            onClick={() =>
+                              handleItemClick(
+                                item,
+                                items.left,
+                                setItems
+                              )
+                            }
+                            className={`checkbox-wrapper`}>
+                            <input
+                              type="checkbox"
+                              checked={item.selected}
+                            />
+                            <svg viewBox="0 0 35.6 35.6">
+                              <circle
+                                className="background"
+                                cx="17.8"
+                                cy="17.8"
+                                r="17.8"></circle>
+                              <circle
+                                className="stroke"
+                                cx="17.8"
+                                cy="17.8"
+                                r="14.37"></circle>
+                              <polyline
+                                className="check"
+                                points="11.78 18.12 15.55 22.23 25.17 12.87"></polyline>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </GridItem>
-            ))}
-          </GridDropZone>
-        </div>
-      </GridContextProvider>
+                </GridItem>
+              ))}
+            </GridDropZone>
+          </div>
+        </GridContextProvider>
+      </div>
     </>
   );
 }

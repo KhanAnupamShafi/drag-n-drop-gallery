@@ -1,8 +1,9 @@
+import Logo from '../assets/logo';
+
 const Header = () => {
   return (
     <div>
-      <h1>Header</h1>
-      <p>Logo</p>
+      <Logo />
     </div>
   );
 };
