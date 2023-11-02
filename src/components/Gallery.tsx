@@ -26,6 +26,7 @@ export function Gallery() {
   });
   const [itemsPerRow, setItemsPerRow] = React.useState(3);
 
+  // Count selected items on the left and right
   const selectedItemsCountLeft = items.left.filter(
     (item) => item.selected
   ).length;
@@ -34,6 +35,8 @@ export function Gallery() {
   ).length;
   const totalSelectedItemsCount =
     selectedItemsCountLeft + selectedItemsCountRight;
+
+  // Handle item click, toggle the 'selected' property
   function handleItemClick(
     item: ItemType,
     list: ItemType[],
@@ -53,20 +56,18 @@ export function Gallery() {
       [list === items.left ? 'left' : 'right']: updatedList,
     }));
   }
+
+  // Update itemsPerRow based on screen width
   React.useEffect(() => {
-    // Update itemsPerRow based on the screen width
     const updateItemsPerRow = () => {
       const screenWidth = window.innerWidth;
 
       if (screenWidth >= 1280) {
-        // Large screens
-        setItemsPerRow(3);
+        setItemsPerRow(3); // Large screens
       } else if (screenWidth >= 1024) {
-        // Tablets or smaller laptops
-        setItemsPerRow(2);
+        setItemsPerRow(2); // Tablets or smaller laptops
       } else {
-        // Mobile devices
-        setItemsPerRow(1);
+        setItemsPerRow(1); // Mobile devices
       }
     };
 
@@ -82,6 +83,7 @@ export function Gallery() {
     };
   }, []);
 
+  // Handle item movement within drop zones
   function onChange(
     sourceId: string,
     sourceIndex: number,
@@ -124,6 +126,8 @@ export function Gallery() {
       });
     }
   }
+
+  // Handle the deletion of selected items
   function handleDeleteSelected() {
     // Filter out the selected items and update the state
     const updatedLeft = items.left.filter((item) => !item.selected);
@@ -169,6 +173,7 @@ export function Gallery() {
                         }`}>
                         <div className="content-overlay"></div>
                         <img
+                          style={{ objectPosition: 'contain' }}
                           className="content-image"
                           src={item.image}
                           alt=""
